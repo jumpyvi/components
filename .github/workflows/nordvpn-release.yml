@@ -10,5 +10,6 @@ jobs:
     uses: ./.github/workflows/release.yml
     with:
       name: nordvpn
+      dockerfile: extensions/nordvpn.Dockerfile
     permissions:
       contents: write
