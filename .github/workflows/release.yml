@@ -1,0 +1,58 @@
+name: Build sysext (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Sysext name (SYSEXT_NAME)
+        required: true
+        type: string
+      dockerfile:
+        type: string
+        default: Dockerfile
+      context:
+        type: string
+        default: .
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build sysext with docker
+        run: docker build -f "${{ inputs.dockerfile }}" --output type=local,dest=out "${{ inputs.context }}"
+
+      - name: Create SHA256SUMS and sysupdate transfer file
+        run: |
+          cd out
+          FILE=$(ls ${{ inputs.name }}_*.raw.zst)
+          VERSION=${FILE#${{ inputs.name }}_}; VERSION=${VERSION%.raw.zst}
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          sha256sum "$FILE" > SHA256SUMS
+          cat > "${{ inputs.name }}.transfer" <<EOF
+          [Transfer]
+          Verify=no
+
+          [Source]
+          Type=url-file
+          Path=https://github.com/${{ github.repository }}/releases/latest/download/
+          MatchPattern=${{ inputs.name }}_@v.raw.zst
+
+          [Target]
+          Type=regular-file
+          Path=/var/lib/extensions
+          MatchPattern=${{ inputs.name }}_@v.raw
+          CurrentSymlink=/var/lib/extensions/${{ inputs.name }}.raw
+          InstancesMax=2
+          EOF
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ inputs.name }}-$VERSION" out/* \
+            --title "${{ inputs.name }} $VERSION" --notes "Automated release" --latest

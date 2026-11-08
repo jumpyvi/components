@@ -1,0 +1,14 @@
+name: NordVPN sysext
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  release:
+    uses: ./.github/workflows/sysext-release.yml
+    with:
+      name: nordvpn
+    permissions:
+      contents: write
