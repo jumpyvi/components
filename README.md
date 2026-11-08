@@ -1,6 +1,11 @@
-# Jumpy Components
+# Vi's Sysupdate Components
 
 Sysupdate components for apps that are not yet available as a flatpak.
+
+# What?
+
+Components are sysexts that update independently from your base system, they are mostly static (they do not depend on a specific base system).
+SELinux is not supported, all other x64 glibc OS with systemd >=259.9 are supported.
 
 # Download a components
 
@@ -30,10 +35,31 @@ systemd-sysupdate --component=nordvpn update
 systemd-sysext refresh
 ```
 
+# Enable auto-updates
+> Update will be done weekly by default
+```
+GIT_REPO=https://raw.githubusercontent.com/jumpyvi/components/refs/heads/master/systemd
+sudo curl -fsSL -o /etc/systemd/system/sysupdate-components.service $GIT_REPO/sysupdate-components.service
+sudo curl -fsSL -o /etc/systemd/system/sysupdate-components.timer $GIT_REPO/sysupdate-components.timer
+sudo systemctl daemon-reload
+sudo systemctl enable --now sysupdate-components.timer
+```
+
 
 # App list
 
 ## NordVPN
+
+> https://github.com/NordSecurity/nordvpn-linux
+
+`nordvpn`
+
+Extracted from the official debian "trixie" builds.
+
+Includes:
+- NordVPN CLI
+- NordVPN systemd daemon
+- NordVPN GUI
 
 
 ## VSCode
