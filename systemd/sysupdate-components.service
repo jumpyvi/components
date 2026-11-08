@@ -1,0 +1,9 @@
+[Unit]
+Description=Update sysupdate components
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'systemd-sysupdate components --no-legend | grep -v "<default>" | while read -r c; do systemd-sysupdate -C "$c" update; done'
+ExecStartPost=/usr/bin/systemd-sysext refresh
