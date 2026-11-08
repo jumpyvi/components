@@ -46,7 +46,6 @@ jobs:
           Type=regular-file
           Path=/var/lib/extensions
           MatchPattern=${{ inputs.name }}_@v.raw
-          CurrentSymlink=/var/lib/extensions/${{ inputs.name }}.raw
           InstancesMax=2
           EOF
 
