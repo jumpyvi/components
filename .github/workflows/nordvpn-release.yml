@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    uses: ./.github/workflows/sysext-release.yml
+    uses: ./.github/workflows/release.yml
     with:
       name: nordvpn
     permissions:
