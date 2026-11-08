@@ -4,8 +4,9 @@ Sysupdate components for apps that are not yet available as a flatpak.
 
 # What?
 
-Components are sysexts that update independently from your base system, they are mostly static (they do not depend on a specific base system).
-SELinux is not supported, all other x64 glibc OS with systemd >=259.9 are supported.
+Components are sysexts that update independently from your base system, they are mostly static (they do not depend on a specific base system). </br>
+SELinux is not supported, all other x64 glibc OS with systemd >=259.9 are supported. </br>
+Made for elementaryOS and GnomeOS
 
 # Download a components
 
@@ -29,7 +30,7 @@ Download the component
 systemd-sysupdate components
 
 # Download
-systemd-sysupdate --component=nordvpn update
+systemd-sysupdate --component={APP_NAME} update
 
 # Refresh
 systemd-sysext refresh
