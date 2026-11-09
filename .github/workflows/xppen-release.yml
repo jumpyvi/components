@@ -1,0 +1,15 @@
+name: XPPen sysext
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+
+jobs:
+  release:
+    uses: ./.github/workflows/release.yml
+    with:
+      name: xppen
+      dockerfile: extensions/xppen.Dockerfile
+    permissions:
+      contents: write
