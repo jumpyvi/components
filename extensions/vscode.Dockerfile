@@ -9,6 +9,9 @@ RUN mkdir -p /rootfs/usr/lib/vscode /rootfs/usr/bin && \
     tar -xzf vscode.tar.gz -C /rootfs/usr/lib/vscode --strip-components=1 && \
     ln -sf ../lib/vscode/bin/code /rootfs/usr/bin/code
 
+COPY files/vscode/code.desktop /rootfs/usr/share/applications/code.desktop
+COPY files/vscode/vscode.svg /rootfs/usr/share/icons/hicolor/scalable/apps/vscode.svg
+
 RUN chown root:root /rootfs/usr/lib/vscode/chrome-sandbox && \
     chmod 4755 /rootfs/usr/lib/vscode/chrome-sandbox
 
