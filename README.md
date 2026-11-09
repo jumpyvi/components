@@ -56,7 +56,9 @@ sudo systemctl enable --now sysupdate-components.timer
 
 Extracted from the official debian "trixie" builds. </br>
 
-Requires a sysusers+tmpfiles refresh, adding yourself to the `nordvpn` user group and enabling `nordvpnd`
+Requires a sysusers+tmpfiles refresh, adding yourself to the `nordvpn` user group and enabling `nordvpnd` </br>
+Does not support login in with the GUI or interactive browser callback, login with a token from the cli (`nordvpn login --token=xxx`) </br>
+Login in from the cli, will log you in the gui too.
 
 Includes:
 - NordVPN CLI
@@ -70,7 +72,8 @@ Includes:
 
 `vscode`
 
-Extracted from the official tar.gz, with fixed setuid.
+Extracted from the official tar.gz, with fixed setuid. </br>
+Includes .desktop and .svg that the tar doesn't provide.
 
 
 ## XPpen
