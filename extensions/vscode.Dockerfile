@@ -1,25 +1,26 @@
 FROM alpine:edge AS downloader
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl gpg ca-certificates binutils xz-utils zstd && \
-    curl -fsSL https://repo.nordvpn.com/gpg/nordvpn_public.asc | gpg --dearmor -o /usr/share/keyrings/nordvpn-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/nordvpn-archive-keyring.gpg arch=amd64] https://repo.nordvpn.com/deb/nordvpn/debian stable main" > /etc/apt/sources.list.d/nordvpn.list
-
+RUN apk add --no-cache curl tar
 WORKDIR /downloads
 
-RUN apt-get update && \
-    apt-get download nordvpn nordvpn-gui
+# Get latest
+RUN curl -fsSL -o vscode.tar.gz https://update.code.visualstudio.com/latest/linux-x64/stable
 
-RUN set -eux; \
-    mkdir -p /rootfs /tmp/deb; \
-    for deb in /downloads/*.deb; do \
-    (cd /tmp/deb && ar x "$deb" && tar -xf data.tar.* -C /rootfs && rm -f *); \
-    done
+RUN mkdir -p /rootfs/usr/lib/vscode /rootfs/usr/bin && \
+    tar -xzf vscode.tar.gz -C /rootfs/usr/lib/vscode --strip-components=1 && \
+    ln -sf ../lib/vscode/bin/code /rootfs/usr/bin/code
 
-RUN mv /rootfs/opt/nordvpn-gui /rootfs/usr/lib/nordvpn-gui && \
-    rmdir /rootfs/opt && \
-    mkdir -p /rootfs/usr/bin && \
-    ln -sf ../lib/nordvpn-gui/nordvpn-gui /rootfs/usr/bin/nordvpn-gui
+RUN chown root:root /rootfs/usr/lib/vscode/chrome-sandbox && \
+    chmod 4755 /rootfs/usr/lib/vscode/chrome-sandbox
+
+FROM alpine:edge AS builder
+ENV SYSEXT_NAME=vscode
+RUN apk add --no-cache erofs-utils zstd
+COPY --from=downloader /rootfs /staging/
+RUN V=$(date -u +%Y%m%d%H%M%S) && \
+    mkdir -p /staging/usr/lib/extension-release.d && \
+    printf 'ID=_any\nARCHITECTURE=x86-64\n' > /staging/usr/lib/extension-release.d/extension-release.${SYSEXT_NAME}_$V && \
+    mkfs.erofs /${SYSEXT_NAME}_$V.raw /staging && \
+    zstd -7 /${SYSEXT_NAME}_$V.raw
 
 FROM scratch
-COPY --from=downloader /rootfs/ /
+COPY --from=builder /*.raw.zst /

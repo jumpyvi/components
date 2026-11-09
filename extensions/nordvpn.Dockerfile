@@ -30,13 +30,13 @@ RUN mkdir -p /rootfs/usr/lib/sysusers.d && \
 
 FROM alpine:edge AS builder
 ENV SYSEXT_NAME=nordvpn
-RUN apk add --no-cache curl erofs-utils bash zstd
-RUN curl -fsSL https://raw.githubusercontent.com/tulilirockz/sysextbuddy/main/sysextbuddy \
-    -o /usr/local/bin/sysextbuddy && chmod +x /usr/local/bin/sysextbuddy
+RUN apk add --no-cache erofs-utils zstd
 COPY --from=downloader /rootfs /staging/
-WORKDIR /staging/
-RUN sysextbuddy --name="${SYSEXT_NAME}_$(date -u +%Y%m%d%H%M%S)" /staging/
-RUN zstd -7 /staging/*.raw
+RUN V=$(date -u +%Y%m%d%H%M%S) && \
+    mkdir -p /staging/usr/lib/extension-release.d && \
+    printf 'ID=_any\nARCHITECTURE=x86-64\n' > /staging/usr/lib/extension-release.d/extension-release.${SYSEXT_NAME}_$V && \
+    mkfs.erofs /${SYSEXT_NAME}_$V.raw /staging && \
+    zstd -7 /${SYSEXT_NAME}_$V.raw
 
 FROM scratch
-COPY --from=builder /staging/*.raw.zst /
+COPY --from=builder /*.raw.zst /

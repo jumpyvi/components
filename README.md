@@ -46,7 +46,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now sysupdate-components.timer
 ```
 
-
 # App list
 
 ## NordVPN
@@ -64,3 +63,9 @@ Includes:
 
 
 ## VSCode
+
+> https://code.visualstudio.com/
+
+`vscode`
+
+Extracted from the official tar.gz, with fixed setuid.

@@ -23,8 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build sysext with docker
-        run: docker build -f "${{ inputs.dockerfile }}" --output type=local,dest=out "${{ inputs.context }}"
+      - name: Install podman
+        run: sudo apt-get update && sudo apt-get install -y podman
+
+      - name: Build sysext with podman
+        run: podman build -f "${{ inputs.dockerfile }}" --output type=local,dest=out "${{ inputs.context }}"
 
       - name: Create SHA256SUMS and sysupdate transfer file
         run: |
