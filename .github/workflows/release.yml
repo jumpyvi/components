@@ -49,7 +49,7 @@ jobs:
           Type=regular-file
           Path=/var/lib/extensions
           MatchPattern=${{ inputs.name }}_@v.raw
-          InstancesMax=2
+          InstancesMax=1
           EOF
 
       - name: Publish release

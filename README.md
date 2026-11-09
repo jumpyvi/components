@@ -54,7 +54,9 @@ sudo systemctl enable --now sysupdate-components.timer
 
 `nordvpn`
 
-Extracted from the official debian "trixie" builds.
+Extracted from the official debian "trixie" builds. </br>
+
+Requires a sysusers+tmpfiles refresh, adding yourself to the `nordvpn` user group and enabling `nordvpnd`
 
 Includes:
 - NordVPN CLI
@@ -69,3 +71,18 @@ Includes:
 `vscode`
 
 Extracted from the official tar.gz, with fixed setuid.
+
+
+## XPpen
+
+> https://www.xp-pen.com/download/deco-mini7w-v2.html
+
+`xppen`
+
+Requires a tmpfiles refresh
+
+Extracted from the tar.gz on the website. </br>
+
+Should work on most xppen tablets (only deco mini 7 is tested) </br>
+
+Manually updated, open a PR if out of date
