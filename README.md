@@ -91,10 +91,10 @@ Should work on most xppen tablets (only deco mini 7 is tested) </br>
 Manually updated, open a PR if out of date
 
 
-## Extra android debug tools
+## Android debug tools
 
-> https://github.com/Benjamin-Dobell/Heimdall
-> https://github.com/Genymobile/scrcpy
+> https://github.com/Benjamin-Dobell/Heimdall </br>
+> https://github.com/Genymobile/scrcpy </br>
 > https://developer.android.com/tools/adb (using scrcpy builds of adb)
 
 `androidtools`
