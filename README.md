@@ -99,4 +99,5 @@ Manually updated, open a PR if out of date
 
 `androidtools`
 
-A bunch of android tools together
+A bunch of android tools together </br>
+Includes udev rules for easy adb for Android and Samsung
