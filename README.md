@@ -30,7 +30,7 @@ Download the component
 systemd-sysupdate components
 
 # Download
-systemd-sysupdate --component={APP_NAME} update
+systemd-sysupdate --component=$APP update
 
 # Refresh
 systemd-sysext refresh
