@@ -1,7 +1,7 @@
 FROM debian:trixie AS downloader
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl gpg ca-certificates binutils xz-utils zstd && \
+    apt-get install -y --no-install-recommends curl gpg ca-certificates binutils xz-utils zstd patchelf && \
     curl -fsSL https://repo.nordvpn.com/gpg/nordvpn_public.asc | gpg --dearmor -o /usr/share/keyrings/nordvpn-archive-keyring.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/nordvpn-archive-keyring.gpg arch=amd64] https://repo.nordvpn.com/deb/nordvpn/debian stable main" > /etc/apt/sources.list.d/nordvpn.list
 
@@ -21,9 +21,13 @@ RUN mv /rootfs/opt/nordvpn-gui /rootfs/usr/lib/nordvpn-gui && \
     mkdir -p /rootfs/usr/bin && \
     ln -sf ../lib/nordvpn-gui/nordvpn-gui /rootfs/usr/bin/nordvpn-gui
 
-RUN for f in /rootfs/usr/lib/nordvpn/*.so; do \
-    ln -sf nordvpn/$(basename "$f") /rootfs/usr/lib/$(basename "$f"); \
-    done
+RUN ln -sf ../x86_64-linux-gnu/libsqlite3.so.0 /rootfs/usr/lib/nordvpn/libsqlite3.so && \
+    patchelf --set-rpath /usr/lib/nordvpn \
+    /rootfs/usr/sbin/nordvpnd \
+    /rootfs/usr/bin/nordvpn \
+    /rootfs/usr/lib/nordvpn/nordfileshare \
+    /rootfs/usr/lib/nordvpn/norduserd \
+    /rootfs/usr/lib/nordvpn/*.so
 
 RUN mkdir -p /rootfs/usr/lib/sysusers.d && \
     echo 'g nordvpn -' > /rootfs/usr/lib/sysusers.d/nordvpn.conf
