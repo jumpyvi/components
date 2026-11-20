@@ -22,14 +22,16 @@ RUN mv /rootfs/opt/nordvpn-gui /rootfs/usr/lib/nordvpn-gui && \
     ln -sf ../lib/nordvpn-gui/nordvpn-gui /rootfs/usr/bin/nordvpn-gui
 
 RUN set -eux; \
-    mkdir -p /rootfs/usr/lib/x86_64-linux-gnu; \
-    cp -a /usr/lib/x86_64-linux-gnu/libsqlite3.so.0* /rootfs/usr/lib/x86_64-linux-gnu/; \
-    ln -sf ../x86_64-linux-gnu/libsqlite3.so.0 /rootfs/usr/lib/nordvpn/libsqlite3.so; \
+    install -D -m 0644 "$(readlink -f /usr/lib/x86_64-linux-gnu/libsqlite3.so.0)" \
+    /rootfs/usr/lib/nordvpn/libsqlite3.so.0; \
+    ln -sf libsqlite3.so.0 /rootfs/usr/lib/nordvpn/libsqlite3.so; \
     patchelf --set-rpath /usr/lib/nordvpn \
     /rootfs/usr/sbin/nordvpnd \
     /rootfs/usr/bin/nordvpn \
     /rootfs/usr/lib/nordvpn/nordfileshare \
-    /rootfs/usr/lib/nordvpn/norduserd
+    /rootfs/usr/lib/nordvpn/norduserd; \
+    find /rootfs/usr/lib/nordvpn -maxdepth 1 -name '*.so' -type f \
+    -exec patchelf --set-rpath /usr/lib/nordvpn {} +
 
 RUN mkdir -p /rootfs/usr/lib/sysusers.d && \
     echo 'g nordvpn -' > /rootfs/usr/lib/sysusers.d/nordvpn.conf
